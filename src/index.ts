@@ -46,11 +46,11 @@ const router = express.Router();
 // Jira will POST events here
 router.post("/jira-events", async (req, res) => {
     try {
-        const { issue, user, webhookEvent } = req.body;
         const channelId = process.env.CHANNEL_ID;
 
         console.log("💜REQ: ", req);
         console.log("💙RES: ", res);
+        console.log("💚BODY: ", req.body);
 
         if(!channelId) {
             console.error("❌Channel ID is missing");
