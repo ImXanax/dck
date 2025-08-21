@@ -1,14 +1,15 @@
 {
-    "name": "discordjs-v14-template-ts",
+    "name": "dck",
     "version": "1.0.0",
     "description": "",
     "main": "index.js",
     "scripts": {
         "start": "cls && node build/index.js",
-        "build": "cls && node build.js"
+        "build": "cls && node build.js",
+        "dev": "cls && node build.js && node build/index.js"
     },
     "keywords": [],
-    "author": "MericcaN41",
+    "author": "sylv",
     "license": "ISC",
     "dependencies": {
         "@discordjs/rest": "^1.1.0",
@@ -16,9 +17,11 @@
         "chalk": "^4.1.2",
         "discord.js": "14.3.0",
         "dotenv": "^16.0.2",
+        "express": "^5.1.0",
         "mongoose": "^6.5.4"
     },
     "devDependencies": {
+        "@types/express": "^5.0.3",
         "typescript": "^4.8.2"
     },
     "overrides": {
