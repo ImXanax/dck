@@ -35,6 +35,7 @@ client.once("ready", () => {
         .setTimestamp()
         .setFooter({ text: `Bot started at`, iconURL: client.user?.displayAvatarURL() || undefined });
 
+    console.log("✅ Bot is running")
     channel.send({ embeds: [embed] });
 });
 
