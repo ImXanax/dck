@@ -46,35 +46,35 @@ const router = express.Router();
 // Jira will POST events here
 router.post("/jira-events", async (req, res) => {
     try {
-        const channelId = process.env.CHANNEL_ID;
+        // const channelId = process.env.CHANNEL_ID;
 
         console.log("💜REQ: ", req);
         console.log("💙RES: ", res);
         console.log("💚BODY: ", req.body);
 
-        if(!channelId) {
-            console.error("❌Channel ID is missing");
-            return res.sendStatus(404);
-        }
-        const channel = client.channels.cache.get(channelId) as TextChannel;
-
-        if (!channel) {
-            console.error("❌ Jira event received, but Discord channel not found.");
-            return res.sendStatus(404);
-        }
-
-        // Format an embed for nicer display
-        const embed = new EmbedBuilder()
-            .setTitle(`📌 Jira Event: ${webhookEvent}`)
-            .setDescription(`**Issue:** ${issue.key} - ${issue.fields.summary}`)
-            .addFields(
-                { name: "Reported By", value: user?.displayName || "Unknown", inline: true },
-                { name: "Link", value: `[View Issue](${issue.self})`, inline: true }
-            )
-            .setColor("Blue")
-            .setTimestamp();
-
-        await channel.send({ embeds: [embed] });
+        // if(!channelId) {
+        //     console.error("❌Channel ID is missing");
+        //     return res.sendStatus(404);
+        // }
+        // const channel = client.channels.cache.get(channelId) as TextChannel;
+        //
+        // if (!channel) {
+        //     console.error("❌ Jira event received, but Discord channel not found.");
+        //     return res.sendStatus(404);
+        // }
+        //
+        // // Format an embed for nicer display
+        // const embed = new EmbedBuilder()
+        //     .setTitle(`📌 Jira Event: ${webhookEvent}`)
+        //     .setDescription(`**Issue:** ${issue.key} - ${issue.fields.summary}`)
+        //     .addFields(
+        //         { name: "Reported By", value: user?.displayName || "Unknown", inline: true },
+        //         { name: "Link", value: `[View Issue](${issue.self})`, inline: true }
+        //     )
+        //     .setColor("Blue")
+        //     .setTimestamp();
+        //
+        // await channel.send({ embeds: [embed] });
 
         res.sendStatus(200);
     } catch (err) {
