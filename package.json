@@ -4,9 +4,9 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "cls && node build/index.js",
-        "build": "cls && node build.js",
-        "dev": "cls && node build.js && node build/index.js"
+        "start": "node build/index.js",
+        "build": "node build.js",
+        "dev": "node build.js && node build/index.js"
     },
     "keywords": [],
     "author": "sylv",
