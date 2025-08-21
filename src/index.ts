@@ -43,17 +43,26 @@ const app = express();
 app.use(express.json());
 const router = express.Router();
 
-// Jira will POST events here
+
+
+// Add the type definition for the Jira-Discord mapping
+const jiraToDiscordMap: Record<string, string> = {
+    "oscar": "1402211230709710940",
+    // Add other users here as needed
+};
+
 router.post("/jira-events", async (req, res) => {
-    console.log("💚BODY: ", req.body);
     try {
         const { issue, user, webhookEvent } = req.body;
         const channelId = process.env.CHANNEL_ID;
+
+        console.log("🔆BODY : ", req.body);
 
         if (!channelId) {
             console.error("❌Channel ID is missing");
             return res.sendStatus(404);
         }
+
         const channel = client.channels.cache.get(channelId) as TextChannel;
 
         if (!channel) {
@@ -61,10 +70,14 @@ router.post("/jira-events", async (req, res) => {
             return res.sendStatus(404);
         }
 
-        // Create the embed using the data from the webhook body
+        const reporterUsername = issue.fields.reporter?.name?.toLowerCase() || 'unknown';
+        const discordUserId: string | undefined = jiraToDiscordMap[reporterUsername];
+        const pingString: string = discordUserId ? `<@${discordUserId}>` : '';
+
+        // Create the embed without the ping
         const embed = new EmbedBuilder()
-            .setTitle(`📌 Jira Event: ${webhookEvent.replace('jira:', '')}`) // Remove 'jira:' from the event name
-            .setDescription(`**Issue:** [${issue.key}](${issue.self}) - ${issue.fields.summary}`) // Link to the issue
+            .setTitle(`📌 Jira Event: ${webhookEvent.replace('jira:', '')}`)
+            .setDescription(`**Issue:** [${issue.key}](${issue.self}) - ${issue.fields.summary}`)
             .setColor("Blue")
             .setTimestamp(new Date(req.body.timestamp))
             .addFields(
@@ -77,7 +90,8 @@ router.post("/jira-events", async (req, res) => {
                 { name: "Updated At", value: `<t:${Math.floor(new Date(issue.fields.updated).getTime() / 1000)}:R>`, inline: true }
             );
 
-        await channel.send({ embeds: [embed] });
+        // Send the ping string as the message content and the embed in a separate property
+        await channel.send({ content: pingString, embeds: [embed] });
 
         res.sendStatus(200);
     } catch (err) {
