@@ -45,36 +45,39 @@ const router = express.Router();
 
 // Jira will POST events here
 router.post("/jira-events", async (req, res) => {
+    console.log("💚BODY: ", req.body);
     try {
-        // const channelId = process.env.CHANNEL_ID;
+        const { issue, user, webhookEvent } = req.body;
+        const channelId = process.env.CHANNEL_ID;
 
-        console.log("💜REQ: ", req);
-        console.log("💙RES: ", res);
-        console.log("💚BODY: ", req.body);
+        if (!channelId) {
+            console.error("❌Channel ID is missing");
+            return res.sendStatus(404);
+        }
+        const channel = client.channels.cache.get(channelId) as TextChannel;
 
-        // if(!channelId) {
-        //     console.error("❌Channel ID is missing");
-        //     return res.sendStatus(404);
-        // }
-        // const channel = client.channels.cache.get(channelId) as TextChannel;
-        //
-        // if (!channel) {
-        //     console.error("❌ Jira event received, but Discord channel not found.");
-        //     return res.sendStatus(404);
-        // }
-        //
-        // // Format an embed for nicer display
-        // const embed = new EmbedBuilder()
-        //     .setTitle(`📌 Jira Event: ${webhookEvent}`)
-        //     .setDescription(`**Issue:** ${issue.key} - ${issue.fields.summary}`)
-        //     .addFields(
-        //         { name: "Reported By", value: user?.displayName || "Unknown", inline: true },
-        //         { name: "Link", value: `[View Issue](${issue.self})`, inline: true }
-        //     )
-        //     .setColor("Blue")
-        //     .setTimestamp();
-        //
-        // await channel.send({ embeds: [embed] });
+        if (!channel) {
+            console.error("❌ Jira event received, but Discord channel not found.");
+            return res.sendStatus(404);
+        }
+
+        // Create the embed using the data from the webhook body
+        const embed = new EmbedBuilder()
+            .setTitle(`📌 Jira Event: ${webhookEvent.replace('jira:', '')}`) // Remove 'jira:' from the event name
+            .setDescription(`**Issue:** [${issue.key}](${issue.self}) - ${issue.fields.summary}`) // Link to the issue
+            .setColor("Blue")
+            .setTimestamp(new Date(req.body.timestamp))
+            .addFields(
+                { name: "Event Type", value: req.body.issue_event_type_name, inline: true },
+                { name: "User", value: user.displayName || "Unknown", inline: true },
+                { name: "Project", value: issue.fields.project.name || "N/A", inline: true },
+                { name: "Status", value: issue.fields.status.name || "N/A", inline: true },
+                { name: "Priority", value: issue.fields.priority.name || "N/A", inline: true },
+                { name: "Created At", value: `<t:${Math.floor(new Date(issue.fields.created).getTime() / 1000)}:R>`, inline: true },
+                { name: "Updated At", value: `<t:${Math.floor(new Date(issue.fields.updated).getTime() / 1000)}:R>`, inline: true }
+            );
+
+        await channel.send({ embeds: [embed] });
 
         res.sendStatus(200);
     } catch (err) {
