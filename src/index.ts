@@ -45,10 +45,8 @@ const router = express.Router();
 
 
 
-// Add the type definition for the Jira-Discord mapping
-const jiraToDiscordMap: Record<string, string> = {
-    "oscar": "1402211230709710940",
-    // Add other users here as needed
+const userMap: Record<string, string> = {
+    "sylvester": "413755451373518864"
 };
 
 router.post("/jira-events", async (req, res) => {
@@ -70,7 +68,7 @@ router.post("/jira-events", async (req, res) => {
         }
 
         const reporterUsername = issue.fields.reporter?.name?.toLowerCase() || 'unknown';
-        const discordUserId: string | undefined = jiraToDiscordMap[reporterUsername];
+        const discordUserId: string | undefined = userMap[reporterUsername];
         const pingString: string = discordUserId ? `<@${discordUserId}>` : '';
 
         // Create the embed without the ping
