@@ -56,8 +56,7 @@ router.post("/jira-events", async (req, res) => {
         const { issue, user, webhookEvent } = req.body;
         const channelId = process.env.CHANNEL_ID;
 
-        console.log("🔆BODY : ", req.body);
-
+        console.log("❎Body : ", JSON.stringify(req.body,null , 2));
         if (!channelId) {
             console.error("❌Channel ID is missing");
             return res.sendStatus(404);
