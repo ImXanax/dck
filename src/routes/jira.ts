@@ -40,7 +40,7 @@ const jiraRoutes = (client: Client) => {
 
         embed
           .setTitle(`💬 ${issue.key}`)
-          .setURL(`(${process.env.JURL}browse/${issue.key}`)
+          .setURL(`${process.env.JURL}browse/${issue.key}`)
           .setDescription(commentText)
           .setColor('Yellow')
           .addFields(
@@ -60,7 +60,7 @@ const jiraRoutes = (client: Client) => {
 
         embed
           .setTitle(`🔵 Issue ${issue.key} Updated`)
-          .setURL(`(${process.env.JURL}browse/${issue.key}`)
+          .setURL(`${process.env.JURL}browse/${issue.key}`)
           .setDescription(`**Status updated to:** ${status}`)
           .setColor('Blue')
           .addFields(
