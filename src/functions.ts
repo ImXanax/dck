@@ -8,7 +8,14 @@ import {
 } from 'discord.js';
 import GuildDB from './schemas/Guild';
 import { GuildOption } from './types';
-import { IEventAction, IEventCategory, IEventMeta, IEventType, IStatuses } from './helper/types';
+import {
+  IEventAction,
+  IEventCategory,
+  IEventMeta,
+  IEventType,
+  IStatuses,
+  IStatusMetaReturn,
+} from './helper/types';
 import mongoose from 'mongoose';
 
 type colorType = 'text' | 'variable' | 'error';
@@ -72,27 +79,40 @@ export const discUserMap: Record<string, string> = {
   hilpert: '727170736866852975',
 };
 
-export function getDiscId(username: string, pingable?: boolean): string {
+export const getDiscId = (username: string, pingable?: boolean): string => {
   const normalized = username.toLowerCase();
   const discId = discUserMap[normalized];
   if (!discId) return username;
   return pingable ? `<@${discId}>` : discId;
-}
+};
 
-export const getStatusMeta = (status: IStatuses) => {
-  switch (status) {
-    case IStatuses.BACKLOG:
-      return { emoji: '🗂️', color: 'gray' };
-    case IStatuses.TODO:
-      return { emoji: '📝', color: 'blue' };
-    case IStatuses.DOING:
-      return { emoji: '🔄', color: 'orange' };
-    case IStatuses.REVIEW:
-      return { emoji: '👀', color: 'purple' };
-    case IStatuses.MERGE:
-      return { emoji: '🔀', color: 'teal' };
-    case IStatuses.DONE:
-      return { emoji: '✅', color: 'green' };
+export const replaceMentions = (text: string): string => {
+  return text.replace(/\[~(\w+)\]/g, (_, username) => {
+    const id = getDiscId(username);
+    return `<@${id}>`;
+  });
+};
+
+export const getStatusMeta = (status: IStatuses): IStatusMetaReturn => {
+  console.log('✔ status: ', status);
+  switch (status.toLowerCase()) {
+    case IStatuses.BACKLOG.toLowerCase():
+      return { emoji: '🗂️', color: 'Grey' };
+    case IStatuses.TODO.toLowerCase():
+      return { emoji: '📝', color: 'White' };
+    case IStatuses.DOING.toLowerCase():
+      return { emoji: '🔄', color: 'Blue' };
+    case IStatuses.REVIEW.toLowerCase():
+      return { emoji: '👀', color: 'Purple' };
+    case IStatuses.MERGE.toLowerCase():
+      return { emoji: '🔀', color: 'Orange' };
+    case IStatuses.DONE.toLowerCase():
+      return { emoji: '✅', color: 'Green' };
+    default:
+      return {
+        emoji: '❓',
+        color: 'Red',
+      };
   }
 };
 

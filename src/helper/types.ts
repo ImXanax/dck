@@ -1,3 +1,5 @@
+import { ColorResolvable } from 'discord.js';
+
 export enum IStatuses {
   BACKLOG = 'BACKLOG',
   TODO = 'TO DO',
@@ -6,6 +8,11 @@ export enum IStatuses {
   MERGE = 'MERGE',
   DONE = 'DONE',
 }
+
+export type IStatusMetaReturn = {
+  color: ColorResolvable;
+  emoji: string;
+};
 
 export enum IEventType {
   comment = 'comment',

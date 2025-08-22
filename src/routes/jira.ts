@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { TextChannel, EmbedBuilder, Client } from 'discord.js';
-import { getDiscId, returnIssueCategory } from '../functions';
-import { IEventType } from '../helper/types';
+import { getDiscId, getStatusMeta, replaceMentions, returnIssueCategory } from '../functions';
+import { IEventType, IStatuses } from '../helper/types';
 
 const router = Router();
 
@@ -11,13 +11,12 @@ const jiraRoutes = (client: Client) => {
 
     try {
       const { issue, comment } = req.body;
-      const eventMeta = returnIssueCategory(req.body.issue_event_type_name);
-
       const channelId = process.env.CHANNEL_ID;
       if (!channelId) return res.sendStatus(404);
       const channel = client.channels.cache.get(channelId) as TextChannel;
       if (!channel) return res.sendStatus(404);
 
+      const eventMeta = returnIssueCategory(req.body.issue_event_type_name);
       let embed = new EmbedBuilder().setTimestamp(new Date(req.body.timestamp));
       let contentPing = '';
 
@@ -37,7 +36,7 @@ const jiraRoutes = (client: Client) => {
         embed
           .setTitle(`💬 ${issue.key}`)
           .setURL(`${process.env.JURL}browse/${issue.key}`)
-          .setDescription(commentText)
+          .setDescription(`Content:\n ${replaceMentions(commentText)}`)
           .setColor('White')
           .addFields(
             { name: 'Commenter', value: comment?.author?.displayName || 'Unknown', inline: true },
@@ -47,14 +46,15 @@ const jiraRoutes = (client: Client) => {
         // Issue event
         const assignee = issue.fields.assignee;
         const status = issue.fields.status?.name || 'N/A';
+        const { emoji, color } = getStatusMeta(status as IStatuses);
 
         contentPing = assignee ? getDiscId(assignee.name, true) : '';
 
         embed
-          .setTitle(`🔵 Issue ${issue.key} Updated`)
+          .setTitle(`${emoji} Issue ${issue.key} Updated`)
           .setURL(`${process.env.JURL}browse/${issue.key}`)
           .setDescription(`**Status updated to:** ${status}`)
-          .setColor('Blue')
+          .setColor(color)
           .addFields(
             { name: 'Assignee', value: assignee?.displayName || 'Unassigned', inline: true },
             { name: 'Priority', value: issue.fields.priority?.name || 'N/A', inline: true }
