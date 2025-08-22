@@ -10,12 +10,11 @@ const jiraRoutes = (client: Client) => {
     console.log('🔵 BODY : ', JSON.stringify(req.body, null, 2));
 
     try {
-      const { issue, webhookEvent } = req.body;
+      const { issue, comment } = req.body;
       const eventMeta = returnIssueCategory(req.body.issue_event_type_name);
 
       const channelId = process.env.CHANNEL_ID;
       if (!channelId) return res.sendStatus(404);
-
       const channel = client.channels.cache.get(channelId) as TextChannel;
       if (!channel) return res.sendStatus(404);
 
@@ -24,33 +23,26 @@ const jiraRoutes = (client: Client) => {
 
       if (eventMeta.category === IEventType.comment) {
         // Comment event
-        const comment = issue.fields.comment?.comments?.[0];
         const commentText = comment?.body || 'No comment text';
 
         const mentionRegex = /\[~(\w+)\]/g;
-        const mentions = [...commentText.matchAll(mentionRegex)]
-          .map((m) => getDiscId(m[1], true))
-          .join(' ');
+        const mentions = [...commentText.matchAll(mentionRegex)].map((m) => getDiscId(m[1], true)); // convert each username to Discord ID
+
+        contentPing = mentions.length > 0 ? mentions.join(' ') : '';
 
         console.log('✔ mentions: ', mentions);
         console.log('✔ comment: ', comment);
         console.log('✔ text: ', commentText);
 
-        contentPing = mentions || '';
-
         embed
           .setTitle(`💬 ${issue.key}`)
           .setURL(`${process.env.JURL}browse/${issue.key}`)
           .setDescription(commentText)
-          .setColor('Yellow')
+          .setColor('White')
           .addFields(
             { name: 'Commenter', value: comment?.author?.displayName || 'Unknown', inline: true },
-            { name: 'Mentions', value: mentions || 'None', inline: true }
+            { name: 'Mentions', value: mentions.join(' | ') || 'None', inline: true }
           );
-
-        if (comment?.attachment?.length) {
-          embed.setThumbnail(comment.attachment[0].thumbnail || comment.attachment[0].content);
-        }
       } else if (eventMeta.category === IEventType.issue) {
         // Issue event
         const assignee = issue.fields.assignee;
