@@ -4,18 +4,11 @@ import {
   GuildMember,
   PermissionFlagsBits,
   PermissionResolvable,
-  PermissionsBitField,
   TextChannel,
 } from 'discord.js';
 import GuildDB from './schemas/Guild';
-import {
-  GuildOption,
-  IEventAction,
-  IEventCategory,
-  IEventMeta,
-  IEventType,
-  IStatuses,
-} from './types';
+import { GuildOption } from './types';
+import { IEventAction, IEventCategory, IEventMeta, IEventType, IStatuses } from './helper/types';
 import mongoose from 'mongoose';
 
 type colorType = 'text' | 'variable' | 'error';

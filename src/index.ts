@@ -1,11 +1,4 @@
-import {
-  Client,
-  GatewayIntentBits,
-  Collection,
-  PermissionFlagsBits,
-  TextChannel,
-  EmbedBuilder,
-} from 'discord.js';
+import { Client, GatewayIntentBits, Collection, TextChannel, EmbedBuilder } from 'discord.js';
 import { Command, SlashCommand } from './types';
 import { config } from 'dotenv';
 import { readdirSync } from 'fs';

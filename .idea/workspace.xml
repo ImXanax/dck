@@ -4,11 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2660e8bf-8a52-4d7c-a516-ae6b1f2b8958" name="Changes" comment="first commit">
-      <change afterPath="$PROJECT_DIR$/.idea/discord.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="2660e8bf-8a52-4d7c-a516-ae6b1f2b8958" name="Changes" comment="implement comment and board detection">
+      <change afterPath="$PROJECT_DIR$/src/helper/types.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/functions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/functions.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/jira.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/jira.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,7 +28,7 @@
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/MericcaN41/discordjs-v14-template-ts.git&quot;,
+    &quot;url&quot;: &quot;https://github.com/ImXanax/dck.git&quot;,
     &quot;accountId&quot;: &quot;5b129ed8-c40b-4f5d-9222-98af2800e135&quot;
   }
 }</component>
@@ -54,10 +56,21 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "prettierjs.PrettierConfiguration.Package": "E:\\Code\\Github\\dck\\node_modules\\prettier",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "ts.external.directory.path": "E:\\Code\\Github\\dck\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="es6.move.members.recent.items">
+      <recent name="E:\Code\Github\dck\src\types.ts" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\Code\Github\dck\src\types" />
+      <recent name="E:\Code\Github\dck\src" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -80,7 +93,11 @@
       <workItem from="1755445170346" duration="289000" />
       <workItem from="1755709314567" duration="1976000" />
       <workItem from="1755766964895" duration="3783000" />
-      <workItem from="1755784503433" duration="3320000" />
+      <workItem from="1755784503433" duration="5466000" />
+      <workItem from="1755791085125" duration="13916000" />
+      <workItem from="1755855394605" duration="702000" />
+      <workItem from="1755869378482" duration="1672000" />
+      <workItem from="1755876776270" duration="9556000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <option name="closed" value="true" />
@@ -90,7 +107,87 @@
       <option name="project" value="LOCAL" />
       <updated>1755787194074</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="update package json">
+      <option name="closed" value="true" />
+      <created>1755794395254</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1755794395254</updated>
+    </task>
+    <task id="LOCAL-00003" summary="update logs">
+      <option name="closed" value="true" />
+      <created>1755799985987</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1755799985987</updated>
+    </task>
+    <task id="LOCAL-00004" summary="update logs">
+      <option name="closed" value="true" />
+      <created>1755800223802</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1755800223802</updated>
+    </task>
+    <task id="LOCAL-00005" summary="logs update">
+      <option name="closed" value="true" />
+      <created>1755803307853</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1755803307853</updated>
+    </task>
+    <task id="LOCAL-00006" summary="logs update">
+      <option name="closed" value="true" />
+      <created>1755803345360</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1755803345360</updated>
+    </task>
+    <task id="LOCAL-00007" summary="update post notification for discord">
+      <option name="closed" value="true" />
+      <created>1755807554981</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1755807554981</updated>
+    </task>
+    <task id="LOCAL-00008" summary="test ping">
+      <option name="closed" value="true" />
+      <created>1755808234337</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1755808234337</updated>
+    </task>
+    <task id="LOCAL-00009" summary="update logging req">
+      <option name="closed" value="true" />
+      <created>1755809579324</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1755809579324</updated>
+    </task>
+    <task id="LOCAL-00010" summary="update list">
+      <option name="closed" value="true" />
+      <created>1755809814084</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1755809814085</updated>
+    </task>
+    <task id="LOCAL-00011" summary="implement comment and board detection">
+      <option name="closed" value="true" />
+      <created>1755884380481</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1755884380481</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -109,6 +206,14 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="first commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="first commit" />
+    <MESSAGE value="update package json" />
+    <MESSAGE value="update logs" />
+    <MESSAGE value="logs update" />
+    <MESSAGE value="update post notification for discord" />
+    <MESSAGE value="test ping" />
+    <MESSAGE value="update logging req" />
+    <MESSAGE value="update list" />
+    <MESSAGE value="implement comment and board detection" />
+    <option name="LAST_COMMIT_MESSAGE" value="implement comment and board detection" />
   </component>
 </project>
