@@ -27,16 +27,20 @@ const jiraRoutes = (client: Client) => {
         const comment = issue.fields.comment?.comments?.[0];
         const commentText = comment?.body || 'No comment text';
 
-        // Extract Jira mentions in the format [~username]
         const mentionRegex = /\[~(\w+)\]/g;
         const mentions = [...commentText.matchAll(mentionRegex)]
           .map((m) => getDiscId(m[1], true))
           .join(' ');
 
+        console.log('✔ mentions: ', mentions);
+        console.log('✔ comment: ', comment);
+        console.log('✔ text: ', commentText);
+
         contentPing = mentions || '';
 
         embed
-          .setTitle(`💬 Comment on Issue: [${issue.key}](${process.env.JURL}browse/${issue.key})`)
+          .setTitle(`💬 ${issue.key}`)
+          .setURL(`(${process.env.JURL}browse/${issue.key}`)
           .setDescription(commentText)
           .setColor('Yellow')
           .addFields(
@@ -55,7 +59,8 @@ const jiraRoutes = (client: Client) => {
         contentPing = assignee ? getDiscId(assignee.name, true) : '';
 
         embed
-          .setTitle(`📌 Issue Updated: [${issue.key}](${process.env.JURL}browse/${issue.key})`)
+          .setTitle(`🔵 Issue ${issue.key} Updated`)
+          .setURL(`(${process.env.JURL}browse/${issue.key}`)
           .setDescription(`**Status updated to:** ${status}`)
           .setColor('Blue')
           .addFields(
