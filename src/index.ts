@@ -1,4 +1,11 @@
-import { Client, GatewayIntentBits, Collection, TextChannel, EmbedBuilder } from 'discord.js';
+import {
+  Client,
+  Collection,
+  EmbedBuilder,
+  GatewayIntentBits,
+  Partials,
+  TextChannel,
+} from 'discord.js';
 import { Command, SlashCommand } from './types';
 import { config } from 'dotenv';
 import { readdirSync } from 'fs';
@@ -10,6 +17,7 @@ config();
 const { Guilds, MessageContent, GuildMessages, GuildMembers, DirectMessages } = GatewayIntentBits;
 const client = new Client({
   intents: [Guilds, MessageContent, GuildMessages, GuildMembers, DirectMessages],
+  partials: [Partials.Channel, Partials.Message],
 });
 
 client.slashCommands = new Collection<string, SlashCommand>();

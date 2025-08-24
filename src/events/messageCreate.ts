@@ -11,7 +11,7 @@ const event: BotEvent = {
 
     console.log('✔ out: ', message);
     // ----- DM Logging -----
-    if (!message.guild) {
+    if (message.channel.type === ChannelType.DM) {
       console.log('✔ message: ', message.content);
       const logChannelId = process.env.CHANNEL_ID;
       if (!logChannelId) return;
@@ -38,7 +38,7 @@ const event: BotEvent = {
     if (!message.member) return;
 
     let prefix = process.env.PREFIX;
-    if (mongoose.connection.readyState === 1) {
+    if (mongoose.connection.readyState === 1 && message.guild) {
       const guildPrefix = await getGuildOption(message.guild, 'prefix');
       if (guildPrefix) prefix = guildPrefix;
     }
