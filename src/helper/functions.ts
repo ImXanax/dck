@@ -6,8 +6,8 @@ import {
   PermissionResolvable,
   TextChannel,
 } from 'discord.js';
-import GuildDB from './schemas/Guild';
-import { GuildOption } from './types';
+import GuildDB from '../schemas/Guild';
+import { GuildOption } from '../types';
 import {
   IEventAction,
   IEventCategory,
@@ -15,13 +15,13 @@ import {
   IEventType,
   IStatuses,
   IStatusMetaReturn,
-} from './helper/types';
+} from './types';
 import mongoose from 'mongoose';
 
 type colorType = 'text' | 'variable' | 'error';
 
 const themeColors = {
-  text: '#ff8e4d',
+  text: '#00b3d3',
   variable: '#ff624d',
   error: '#f5426c',
 };

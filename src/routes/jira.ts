@@ -1,6 +1,11 @@
 import { Router } from 'express';
 import { TextChannel, EmbedBuilder, Client } from 'discord.js';
-import { getDiscId, getStatusMeta, replaceMentions, returnIssueCategory } from '../functions';
+import {
+  getDiscId,
+  getStatusMeta,
+  replaceMentions,
+  returnIssueCategory,
+} from '../helper/functions';
 import { IEventType, IStatuses } from '../helper/types';
 
 const router = Router();
