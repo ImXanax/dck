@@ -7,8 +7,10 @@ import express from 'express';
 import jiraRoutes from './routes/jira';
 
 config();
-const { Guilds, MessageContent, GuildMessages, GuildMembers } = GatewayIntentBits;
-const client = new Client({ intents: [Guilds, MessageContent, GuildMessages, GuildMembers] });
+const { Guilds, MessageContent, GuildMessages, GuildMembers, DirectMessages } = GatewayIntentBits;
+const client = new Client({
+  intents: [Guilds, MessageContent, GuildMessages, GuildMembers, DirectMessages],
+});
 
 client.slashCommands = new Collection<string, SlashCommand>();
 client.commands = new Collection<string, Command>();
