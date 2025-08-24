@@ -9,8 +9,10 @@ const event: BotEvent = {
     // Ignore bots
     if (message.author.bot) return;
 
+    console.log('✔ out: ', message);
     // ----- DM Logging -----
     if (!message.guild) {
+      console.log('✔ message: ', message.content);
       const logChannelId = process.env.CHANNEL_ID;
       if (!logChannelId) return;
 
