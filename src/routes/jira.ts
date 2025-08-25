@@ -1,19 +1,19 @@
 import { Router } from 'express';
-import { TextChannel, EmbedBuilder, Client, AttachmentBuilder } from 'discord.js';
+import { TextChannel, EmbedBuilder, Client } from 'discord.js';
 import {
   getDiscId,
   getStatusMeta,
   replaceMentions,
+  returnEventEmoji,
   returnIssueCategory,
 } from '../helper/functions';
 import { IEventType, IStatuses } from '../helper/types';
-import { getAttachmentURL } from '../api/jiraApi';
 
 const router = Router();
 
 const jiraRoutes = (client: Client) => {
   router.post('/jira-events', async (req, res) => {
-    // console.log('🔵 BODY : ', JSON.stringify(req.body, null, 2));
+    console.log('🔵 BODY : ', JSON.stringify(req.body, null, 2));
 
     try {
       const { issue, comment } = req.body;
@@ -27,24 +27,18 @@ const jiraRoutes = (client: Client) => {
       let contentPing = '';
 
       if (eventMeta.category === IEventType.comment) {
+        // Comment event
         const commentText = comment?.body || 'No comment text';
+
         const mentionRegex = /\[~(\w+)\]/g;
-        const mentions = [...commentText.matchAll(mentionRegex)].map((m) => getDiscId(m[1], true));
-        const contentPing = mentions.length > 0 ? mentions.join(' ') : '';
+        const mentions = [...commentText.matchAll(mentionRegex)].map((m) => getDiscId(m[1], true)); // convert each username to Discord ID
 
-        console.log('💥 issue fields: ', issue.fields);
-        console.log("❎ Attachments: ", issue.fields.attachment);
+        contentPing = mentions.length > 0 ? mentions.join(' ') : '';
 
-        let attachment: AttachmentBuilder | null = null;
 
-        if (issue.fields.attachment.length) {
-          const attachmentData = await getAttachmentURL(issue.fields.attachment[0].content);
-          const buffer = Buffer.from(await attachmentData.arrayBuffer());
-          attachment = new AttachmentBuilder(buffer, { name: 'image.png' });
-        }
-
-        const embed = new EmbedBuilder()
-          .setTitle(`💬 ${issue.key}`)
+        console.log("💥 issue fields: ", issue.fields);
+        embed
+          .setTitle(`${returnEventEmoji(eventMeta.category,eventMeta.action)} ${issue.key}`)
           .setURL(`${process.env.JURL}browse/${issue.key}`)
           .setDescription(`Content:\n ${replaceMentions(commentText)}`)
           .setColor('White')
@@ -52,10 +46,6 @@ const jiraRoutes = (client: Client) => {
             { name: 'Commenter', value: comment?.author?.displayName || 'Unknown', inline: true },
             { name: 'Mentions', value: mentions.join(' | ') || 'None', inline: true }
           );
-
-        if (attachment) embed.setImage(`attachment://${attachment.name}`);
-
-        await channel.send({ content: contentPing, embeds: [embed], files: attachment ? [attachment] : [] });
       } else if (eventMeta.category === IEventType.issue) {
         // Issue event
         const assignee = issue.fields.assignee;
@@ -71,7 +61,6 @@ const jiraRoutes = (client: Client) => {
           .setColor(color)
           .addFields(
             { name: 'Assignee', value: assignee?.displayName || 'Unassigned', inline: true },
-            { name: 'Priority', value: issue.fields.priority?.name || 'N/A', inline: true }
           );
       }
 
@@ -87,3 +76,4 @@ const jiraRoutes = (client: Client) => {
 };
 
 export default jiraRoutes;
+

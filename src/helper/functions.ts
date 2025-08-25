@@ -26,6 +26,23 @@ const themeColors = {
   error: '#f5426c',
 };
 
+const emojis = {
+  comment_add: '<:comadd:1409489201300508714>',
+  comment_del: '<:comdel:1409489532474228856>',
+  comment_up: '<:comupd:1409489631342366751>',
+  kanban: '<:kanban:1409490224140124231>',
+  mention: '<:mention:1409489764427628636>',
+
+  task_add: '<:taskadd:1409492835232776216>',
+  task_new: '<:tasknew:1409492879054737460>',
+  task_rev: '<:taskrev:1409492892904329258>',
+  task_doing: '<:taskdoing:1409492866174291978>',
+  merge: '<:merge:1409495682687176756>',
+  task_done: '<:taskdone:1409607140112465970>',
+
+  logo: '<:logo:1409443273797406780>',
+};
+
 export const getThemeColor = (color: colorType) => Number(`0x${themeColors[color].substring(1)}`);
 
 export const color = (color: colorType, message: any) => {
@@ -97,17 +114,17 @@ export const getStatusMeta = (status: IStatuses): IStatusMetaReturn => {
   console.log('✔ status: ', status);
   switch (status.toLowerCase()) {
     case IStatuses.BACKLOG.toLowerCase():
-      return { emoji: '🗂️', color: 'Grey' };
+      return { emoji: emojis.task_add, color: 'Grey' };
     case IStatuses.TODO.toLowerCase():
-      return { emoji: '📝', color: 'White' };
+      return { emoji: emojis.task_new, color: 'White' };
     case IStatuses.DOING.toLowerCase():
-      return { emoji: '🔄', color: 'Blue' };
+      return { emoji: emojis.task_doing, color: 'Blue' };
     case IStatuses.REVIEW.toLowerCase():
-      return { emoji: '👀', color: 'Purple' };
+      return { emoji: emojis.task_rev, color: 'Purple' };
     case IStatuses.MERGE.toLowerCase():
-      return { emoji: '🔀', color: 'Orange' };
+      return { emoji: emojis.merge, color: 'Orange' };
     case IStatuses.DONE.toLowerCase():
-      return { emoji: '✅', color: 'Green' };
+      return { emoji: emojis.task_done, color: 'Green' };
     default:
       return {
         emoji: '❓',
@@ -147,4 +164,18 @@ export const returnIssueCategory = (eventType: string): IEventMeta => {
   }
 
   return { category, action };
+};
+
+export const returnEventEmoji = (eventCategory: string, eventAction: string) => {
+  if (eventCategory === 'comment') {
+    if (eventAction === 'created') return emojis.comment_add;
+    if (eventAction === 'updated') return emojis.comment_up;
+    if (eventAction === 'deleted') return emojis.comment_del;
+  }
+  if (eventCategory === 'issue') {
+    if (eventAction === 'updated') return emojis.task_new;
+  }
+  if (eventCategory === 'other') {
+    return '';
+  }
 };

@@ -1,4 +1,3 @@
-import { AttachmentBuilder } from 'discord.js';
 
 const authHeader = 'Basic ' + Buffer.from(`${process.env.JU}:${process.env.JP}`).toString('base64');
 
