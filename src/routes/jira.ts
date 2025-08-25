@@ -33,11 +33,7 @@ const jiraRoutes = (client: Client) => {
         const mentions = [...commentText.matchAll(mentionRegex)].map((m) => getDiscId(m[1], true)); // convert each username to Discord ID
 
         contentPing = mentions.length > 0 ? mentions.join(' ') : '';
-
-        console.log('✔ mentions: ', mentions);
-        console.log('✔ comment: ', comment);
-        console.log('✔ text: ', commentText);
-
+        console.log("💥 issue fields: ", issue.fields);
         embed
           .setTitle(`💬 ${issue.key}`)
           .setURL(`${process.env.JURL}browse/${issue.key}`)
