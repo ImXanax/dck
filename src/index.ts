@@ -44,13 +44,12 @@ client.once('ready', () => {
   }
 
   const embed = new EmbedBuilder()
-    .setTitle('Bot Status')
-    .setDescription('✅ The bot is now **online** and ready to go!')
-    .setColor('Green')
+    .setDescription('```ts\n' + 'ALL SYSTEMS OPERATIONAL\n' + '```')
+    .setColor('#000')
     .setTimestamp()
     .setFooter({ text: `Bot started at`, iconURL: client.user?.displayAvatarURL() || undefined });
 
-  console.log('✅ Bot is running');
+  console.log('✅ Application online');
   channel.send({ embeds: [embed] });
 });
 
