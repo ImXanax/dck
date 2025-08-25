@@ -7,6 +7,7 @@ import {
   returnIssueCategory,
 } from '../helper/functions';
 import { IEventType, IStatuses } from '../helper/types';
+import { getAttachmentURL } from '../api/jiraApi';
 
 const router = Router();
 
@@ -28,17 +29,26 @@ const jiraRoutes = (client: Client) => {
       if (eventMeta.category === IEventType.comment) {
         // Comment event
         const commentText = comment?.body || 'No comment text';
-
+        let attachmentUrl = '';
         const mentionRegex = /\[~(\w+)\]/g;
         const mentions = [...commentText.matchAll(mentionRegex)].map((m) => getDiscId(m[1], true)); // convert each username to Discord ID
 
         contentPing = mentions.length > 0 ? mentions.join(' ') : '';
-        console.log("💥 issue fields: ", issue.fields);
+
+        console.log('💥 issue fields: ', issue.fields);
+
+        if (issue.fields.attachment.length) {
+          attachmentUrl = await getAttachmentURL(issue.fields.attachment.self);
+        }
+
+        console.log("✔ attachment: ",attachmentUrl)
+
         embed
           .setTitle(`💬 ${issue.key}`)
           .setURL(`${process.env.JURL}browse/${issue.key}`)
           .setDescription(`Content:\n ${replaceMentions(commentText)}`)
           .setColor('White')
+          .setImage(attachmentUrl ?? null)
           .addFields(
             { name: 'Commenter', value: comment?.author?.displayName || 'Unknown', inline: true },
             { name: 'Mentions', value: mentions.join(' | ') || 'None', inline: true }
