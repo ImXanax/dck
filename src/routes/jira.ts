@@ -42,8 +42,8 @@ const jiraRoutes = (client: Client) => {
           .setDescription(`Content:\n ${replaceWithMention(commentText)}`)
           .setColor(color)
           .addFields(
-            { name: 'Commenter', value: replaceWithMention(comment?.author?.displayName) || 'Unknown', inline: true },
-            { name: 'Reporter', value: replaceWithMention(issue.fields?.reporter?.displayName) || 'Unknown', inline: true },
+            { name: 'Commenter', value: getDiscId(comment?.author?.displayName) || 'Unknown', inline: true },
+            { name: 'Reporter', value: getDiscId(issue.fields?.reporter?.displayName) || 'Unknown', inline: true },
             { name: 'Mentions', value: mentions.join(' | ') || 'None', inline: true },
             { name: 'Version', value:  version || 'None', inline: true },
           );
