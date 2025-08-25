@@ -38,7 +38,7 @@ const jiraRoutes = (client: Client) => {
         let attachment: AttachmentBuilder | null = null;
 
         if (issue.fields.attachment.length) {
-          const attachmentData = await getAttachmentURL(issue.fields.attachment[0].self);
+          const attachmentData = await getAttachmentURL(issue.fields.attachment[0].content);
           const buffer = Buffer.from(await attachmentData.arrayBuffer());
           attachment = new AttachmentBuilder(buffer, { name: 'image.png' });
         }
