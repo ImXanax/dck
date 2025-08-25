@@ -8,7 +8,6 @@ const command: SlashCommand = {
     interaction.reply({
       embeds: [
         new EmbedBuilder()
-          .setAuthor({ name: 'syl' })
           .setDescription(`🏓 Pong! \n 📡 Ping: ${interaction.client.ws.ping}`)
           .setColor(getThemeColor('text')),
       ],

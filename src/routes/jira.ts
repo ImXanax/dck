@@ -36,17 +36,26 @@ const jiraRoutes = (client: Client) => {
 
 
         console.log("💥 issue fields: ", issue.fields);
-        embed
-          .setTitle(`${emoji} ${issue.key} ${eventMeta.category.toUpperCase()} ${eventMeta.action.toUpperCase()}`)
-          .setURL(`${process.env.JURL}browse/${issue.key}`)
-          .setDescription(`Content:\n ${replaceWithMention(commentText)}`)
-          .setColor(color)
-          .addFields(
-            { name: 'Commenter', value: getDiscId(comment?.author?.displayName,true) || 'Unknown', inline: true },
-            { name: 'Reporter', value: getDiscId(issue.fields?.reporter?.displayName,true) || 'Unknown', inline: true },
-            { name: 'Mentions', value: mentions.join(' | ') || 'None', inline: true },
-            { name: 'Version', value:  version || 'None', inline: true },
-          );
+
+        if(eventMeta.action === 'deleted'){
+          embed
+            .setTitle(`${emoji} ${issue.key} ${eventMeta.category.toUpperCase()} ${eventMeta.action.toUpperCase()}`)
+            .setURL(`${process.env.JURL}browse/${issue.key}`)
+            .setColor(color)
+        }else{
+          embed
+            .setTitle(`${emoji} ${issue.key} ${eventMeta.category.toUpperCase()} ${eventMeta.action.toUpperCase()}`)
+            .setURL(`${process.env.JURL}browse/${issue.key}`)
+            .setDescription(`Content:\n ${replaceWithMention(commentText)}`)
+            .setColor(color)
+            .addFields(
+              { name: 'Commenter', value: getDiscId(comment?.author?.displayName,true) || 'Unknown', inline: true },
+              { name: 'Reporter', value: getDiscId(issue.fields?.reporter?.displayName,true) || 'Unknown', inline: true },
+              { name: 'Mentions', value: mentions.join(' | ') || 'None', inline: true },
+              { name: 'Version', value:  version || 'None', inline: true },
+            );
+        }
+
       } else if (eventMeta.category === IEventType.issue) {
         // Issue event
         const assignee = issue.fields.assignee;
