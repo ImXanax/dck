@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { TextChannel, EmbedBuilder, Client } from 'discord.js';
+import { TextChannel, EmbedBuilder, Client, AttachmentBuilder } from 'discord.js';
 import {
   getDiscId,
   getStatusMeta,
@@ -27,35 +27,35 @@ const jiraRoutes = (client: Client) => {
       let contentPing = '';
 
       if (eventMeta.category === IEventType.comment) {
-        // Comment event
         const commentText = comment?.body || 'No comment text';
-        // let attachmentUrl = '';
         const mentionRegex = /\[~(\w+)\]/g;
-        const mentions = [...commentText.matchAll(mentionRegex)].map((m) => getDiscId(m[1], true)); // convert each username to Discord ID
-
-        contentPing = mentions.length > 0 ? mentions.join(' ') : '';
+        const mentions = [...commentText.matchAll(mentionRegex)].map((m) => getDiscId(m[1], true));
+        const contentPing = mentions.length > 0 ? mentions.join(' ') : '';
 
         console.log('💥 issue fields: ', issue.fields);
-        console.log("❎ 1ATTACHMENT: ",issue.fields.attachment)
-        console.log("❎ 2ATTACHMENT: ",issue.fields.attachment[0])
-        console.log("❎ 3ATTACHMENT: ",issue.fields.attachment[0].content)
+        console.log("❎ Attachments: ", issue.fields.attachment);
 
-        // if (issue.fields.attachment.length) {
-        //   attachmentUrl = await getAttachmentURL(issue.fields.attachment[0].self);
-        // }
+        let attachment: AttachmentBuilder | null = null;
 
-        // console.log("✔ attachment: ",attachmentUrl)
+        if (issue.fields.attachment.length) {
+          const attachmentData = await getAttachmentURL(issue.fields.attachment[0].self);
+          const buffer = Buffer.from(await attachmentData.arrayBuffer());
+          attachment = new AttachmentBuilder(buffer, { name: 'image.png' });
+        }
 
-        embed
+        const embed = new EmbedBuilder()
           .setTitle(`💬 ${issue.key}`)
           .setURL(`${process.env.JURL}browse/${issue.key}`)
           .setDescription(`Content:\n ${replaceMentions(commentText)}`)
           .setColor('White')
-          .setImage(issue.fields.attachment[0].content ?? null)
           .addFields(
             { name: 'Commenter', value: comment?.author?.displayName || 'Unknown', inline: true },
             { name: 'Mentions', value: mentions.join(' | ') || 'None', inline: true }
           );
+
+        if (attachment) embed.setImage(`attachment://${attachment.name}`);
+
+        await channel.send({ content: contentPing, embeds: [embed], files: attachment ? [attachment] : [] });
       } else if (eventMeta.category === IEventType.issue) {
         // Issue event
         const assignee = issue.fields.assignee;
