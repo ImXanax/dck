@@ -13,7 +13,7 @@ const router = Router();
 
 const jiraRoutes = (client: Client) => {
   router.post('/jira-events', async (req, res) => {
-    console.log('🔵 BODY : ', JSON.stringify(req.body, null, 2));
+    // console.log('🔵 BODY : ', JSON.stringify(req.body, null, 2));
 
     try {
       const { issue, comment } = req.body;
@@ -36,6 +36,9 @@ const jiraRoutes = (client: Client) => {
         contentPing = mentions.length > 0 ? mentions.join(' ') : '';
 
         console.log('💥 issue fields: ', issue.fields);
+        console.log("❎ 1ATTACHMENT: ",issue.fields.attachment)
+        console.log("❎ 2ATTACHMENT: ",issue.fields.attachment[0])
+        console.log("❎ 3ATTACHMENT: ",issue.fields.attachment[0].content)
 
         // if (issue.fields.attachment.length) {
         //   attachmentUrl = await getAttachmentURL(issue.fields.attachment[0].self);
