@@ -118,6 +118,7 @@ export const getDiscId = (username: string, pingable?: boolean): string => {
 
 export const replaceWithMention = (text: string): string => {
   return text.replace(/\[~(\w+)\]/g, (_, username) => {
+    console.log("💜User: ", username)
     const id = getDiscId(username);
     return `<@${id}>`;
   });

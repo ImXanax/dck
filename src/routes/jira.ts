@@ -31,7 +31,7 @@ const jiraRoutes = (client: Client) => {
         const { emoji, color } = getContentModifierFromStatus(eventMeta.category, eventMeta.action as IEventAction);
         const mentionRegex = /\[~(\w+)\]/g;
         const mentions = [...commentText.matchAll(mentionRegex)].map((m) => getDiscId(m[1], true)); // convert each username to Discord ID
-        const version = issue.fields.fixVersions.name
+        const version = issue.fields.fixVersions[0].name
         contentPing = mentions.length > 0 ? mentions.join(' ') : '';
 
 
@@ -43,6 +43,7 @@ const jiraRoutes = (client: Client) => {
           .setColor(color)
           .addFields(
             { name: 'Commenter', value: replaceWithMention(comment?.author?.displayName) || 'Unknown', inline: true },
+            { name: 'Reporter', value: replaceWithMention(issue.fields?.reporter?.displayName) || 'Unknown', inline: true },
             { name: 'Mentions', value: mentions.join(' | ') || 'None', inline: true },
             { name: 'Version', value:  version || 'None', inline: true },
           );
