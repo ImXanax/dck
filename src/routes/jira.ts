@@ -29,7 +29,7 @@ const jiraRoutes = (client: Client) => {
       if (eventMeta.category === IEventType.comment) {
         // Comment event
         const commentText = comment?.body || 'No comment text';
-        let attachmentUrl = '';
+        // let attachmentUrl = '';
         const mentionRegex = /\[~(\w+)\]/g;
         const mentions = [...commentText.matchAll(mentionRegex)].map((m) => getDiscId(m[1], true)); // convert each username to Discord ID
 
@@ -37,18 +37,18 @@ const jiraRoutes = (client: Client) => {
 
         console.log('💥 issue fields: ', issue.fields);
 
-        if (issue.fields.attachment.length) {
-          attachmentUrl = await getAttachmentURL(issue.fields.attachment.self);
-        }
+        // if (issue.fields.attachment.length) {
+        //   attachmentUrl = await getAttachmentURL(issue.fields.attachment[0].self);
+        // }
 
-        console.log("✔ attachment: ",attachmentUrl)
+        // console.log("✔ attachment: ",attachmentUrl)
 
         embed
           .setTitle(`💬 ${issue.key}`)
           .setURL(`${process.env.JURL}browse/${issue.key}`)
           .setDescription(`Content:\n ${replaceMentions(commentText)}`)
           .setColor('White')
-          .setImage(attachmentUrl ?? null)
+          .setImage(issue.fields.attachment[0].content ?? null)
           .addFields(
             { name: 'Commenter', value: comment?.author?.displayName || 'Unknown', inline: true },
             { name: 'Mentions', value: mentions.join(' | ') || 'None', inline: true }
