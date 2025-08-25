@@ -18,13 +18,24 @@ import {
 } from './types';
 import mongoose from 'mongoose';
 
-type colorType = 'text' | 'variable' | 'error';
+type IThemeColors = keyof typeof themeColors;
 
 const themeColors = {
   text: '#00b3d3',
   variable: '#ff624d',
   error: '#f5426c',
-};
+
+  b_bl: '#81e898',
+  b_todo: '#c1f2fc',
+  b_doing: '#00b3d3',
+  b_rev: '#9374ec',
+  b_merge: '#e78a48',
+  b_done: '#02bd06',
+
+  new: '#00b3d3',
+  update: '#81ec7d',
+  delete: '#f5426c',
+} as const;
 
 const emojis = {
   comment_add: '<:comadd:1409489201300508714>',
@@ -41,11 +52,13 @@ const emojis = {
   task_done: '<:taskdone:1409607140112465970>',
 
   logo: '<:logo:1409443273797406780>',
+  error: '<:error:1409618137120243862>',
 };
 
-export const getThemeColor = (color: colorType) => Number(`0x${themeColors[color].substring(1)}`);
+export const getThemeColor = (color: IThemeColors) =>
+  Number(`0x${themeColors[color].substring(1)}`);
 
-export const color = (color: colorType, message: any) => {
+export const color = (color: IThemeColors, message: any) => {
   return chalk.hex(themeColors[color])(message);
 };
 
@@ -103,34 +116,60 @@ export const getDiscId = (username: string, pingable?: boolean): string => {
   return pingable ? `<@${discId}>` : discId;
 };
 
-export const replaceMentions = (text: string): string => {
+export const replaceWithMention = (text: string): string => {
   return text.replace(/\[~(\w+)\]/g, (_, username) => {
     const id = getDiscId(username);
     return `<@${id}>`;
   });
 };
 
-export const getStatusMeta = (status: IStatuses): IStatusMetaReturn => {
-  console.log('✔ status: ', status);
-  switch (status.toLowerCase()) {
-    case IStatuses.BACKLOG.toLowerCase():
-      return { emoji: emojis.task_add, color: 'Grey' };
-    case IStatuses.TODO.toLowerCase():
-      return { emoji: emojis.task_new, color: 'White' };
-    case IStatuses.DOING.toLowerCase():
-      return { emoji: emojis.task_doing, color: 'Blue' };
-    case IStatuses.REVIEW.toLowerCase():
-      return { emoji: emojis.task_rev, color: 'Purple' };
-    case IStatuses.MERGE.toLowerCase():
-      return { emoji: emojis.merge, color: 'Orange' };
-    case IStatuses.DONE.toLowerCase():
-      return { emoji: emojis.task_done, color: 'Green' };
-    default:
-      return {
-        emoji: '❓',
-        color: 'Red',
-      };
+export const getContentModifierFromStatus = (
+  eventType: keyof typeof IEventType,
+  status: IStatuses | IEventAction
+): IStatusMetaReturn => {
+  console.log('💛 status: ', eventType, status);
+
+  const defaultReturnValue = {
+    emoji: emojis.error,
+    color: getThemeColor('error')
   }
+
+  // Issue event type handler
+  if (eventType === IEventType.issue) {
+
+
+    switch ((status as IStatuses).toLowerCase()) {
+      case IStatuses.BACKLOG.toLowerCase():
+        return { emoji: emojis.task_add, color: getThemeColor('b_bl') };
+      case IStatuses.TODO.toLowerCase():
+        return { emoji: emojis.task_new, color: getThemeColor('b_todo') };
+      case IStatuses.DOING.toLowerCase():
+        return { emoji: emojis.task_doing, color: getThemeColor('b_doing') };
+      case IStatuses.REVIEW.toLowerCase():
+        return { emoji: emojis.task_rev, color: getThemeColor('b_rev') };
+      case IStatuses.MERGE.toLowerCase():
+        return { emoji: emojis.merge, color: getThemeColor('b_merge') };
+      case IStatuses.DONE.toLowerCase():
+        return { emoji: emojis.task_done, color: getThemeColor('b_done') };
+      default:
+        return defaultReturnValue;
+    }
+  }
+  // Comment event type handler
+  if (eventType === IEventType.comment) {
+    switch ((status as IEventAction).toLowerCase()) {
+      case IStatuses.CREATED.toLowerCase():
+        return { emoji: emojis.comment_add, color: getThemeColor('new') };
+      case IStatuses.UPDATED.toLowerCase():
+        return { emoji: emojis.comment_up, color: getThemeColor('update') };
+      case IStatuses.DELETED.toLowerCase():
+        return { emoji: emojis.comment_del, color: getThemeColor('delete') };
+      default:
+        return defaultReturnValue;
+    }
+  }
+
+  return defaultReturnValue;
 };
 
 export const returnIssueCategory = (eventType: string): IEventMeta => {
@@ -157,6 +196,10 @@ export const returnIssueCategory = (eventType: string): IEventMeta => {
       category = 'issue';
       action = 'updated';
       break;
+    case 'issue_created':
+      category = 'issue';
+      action = 'created';
+      break;
 
     default:
       category = 'other';
@@ -164,18 +207,4 @@ export const returnIssueCategory = (eventType: string): IEventMeta => {
   }
 
   return { category, action };
-};
-
-export const returnEventEmoji = (eventCategory: string, eventAction: string) => {
-  if (eventCategory === 'comment') {
-    if (eventAction === 'created') return emojis.comment_add;
-    if (eventAction === 'updated') return emojis.comment_up;
-    if (eventAction === 'deleted') return emojis.comment_del;
-  }
-  if (eventCategory === 'issue') {
-    if (eventAction === 'updated') return emojis.task_new;
-  }
-  if (eventCategory === 'other') {
-    return '';
-  }
 };

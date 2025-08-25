@@ -2,12 +2,11 @@ import { Router } from 'express';
 import { TextChannel, EmbedBuilder, Client } from 'discord.js';
 import {
   getDiscId,
-  getStatusMeta,
-  replaceMentions,
-  returnEventEmoji,
+  getContentModifierFromStatus,
+  replaceWithMention,
   returnIssueCategory,
 } from '../helper/functions';
-import { IEventType, IStatuses } from '../helper/types';
+import { IEventAction, IEventType, IStatuses } from '../helper/types';
 
 const router = Router();
 
@@ -29,28 +28,29 @@ const jiraRoutes = (client: Client) => {
       if (eventMeta.category === IEventType.comment) {
         // Comment event
         const commentText = comment?.body || 'No comment text';
-
+        const { emoji, color } = getContentModifierFromStatus(eventMeta.category, eventMeta.action as IEventAction);
         const mentionRegex = /\[~(\w+)\]/g;
         const mentions = [...commentText.matchAll(mentionRegex)].map((m) => getDiscId(m[1], true)); // convert each username to Discord ID
-
+        const version = issue.fields.fixVersions.name
         contentPing = mentions.length > 0 ? mentions.join(' ') : '';
 
 
         console.log("💥 issue fields: ", issue.fields);
         embed
-          .setTitle(`${returnEventEmoji(eventMeta.category,eventMeta.action)} ${issue.key}`)
+          .setTitle(`${emoji} ${issue.key}`)
           .setURL(`${process.env.JURL}browse/${issue.key}`)
-          .setDescription(`Content:\n ${replaceMentions(commentText)}`)
-          .setColor('White')
+          .setDescription(`Content:\n ${replaceWithMention(commentText)}`)
+          .setColor(color)
           .addFields(
-            { name: 'Commenter', value: comment?.author?.displayName || 'Unknown', inline: true },
-            { name: 'Mentions', value: mentions.join(' | ') || 'None', inline: true }
+            { name: 'Commenter', value: replaceWithMention(comment?.author?.displayName) || 'Unknown', inline: true },
+            { name: 'Mentions', value: mentions.join(' | ') || 'None', inline: true },
+            { name: 'Version', value:  version || 'None', inline: true },
           );
       } else if (eventMeta.category === IEventType.issue) {
         // Issue event
         const assignee = issue.fields.assignee;
         const status = issue.fields.status?.name || 'N/A';
-        const { emoji, color } = getStatusMeta(status as IStatuses);
+        const { emoji, color } = getContentModifierFromStatus(eventMeta.category, status as IStatuses);
 
         contentPing = assignee ? getDiscId(assignee.name, true) : '';
 

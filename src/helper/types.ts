@@ -7,6 +7,9 @@ export enum IStatuses {
   REVIEW = 'REVIEW',
   MERGE = 'MERGE',
   DONE = 'DONE',
+  CREATED = 'CREATED',
+  UPDATED = 'UPDATED',
+  DELETED = 'DELETED',
 }
 
 export type IStatusMetaReturn = {
@@ -15,8 +18,8 @@ export type IStatusMetaReturn = {
 };
 
 export enum IEventType {
-  comment = 'comment',
   issue = 'issue',
+  comment = 'comment'
 }
 
 export type IEventCategory = 'issue' | 'comment' | 'other';
