@@ -37,7 +37,7 @@ const jiraRoutes = (client: Client) => {
 
         console.log("💥 issue fields: ", issue.fields);
         embed
-          .setTitle(`${emoji} ${issue.key}`)
+          .setTitle(`${emoji} ${issue.key} ${eventMeta.category.toUpperCase()} ${eventMeta.action.toUpperCase()}`)
           .setURL(`${process.env.JURL}browse/${issue.key}`)
           .setDescription(`Content:\n ${replaceWithMention(commentText)}`)
           .setColor(color)
@@ -56,12 +56,12 @@ const jiraRoutes = (client: Client) => {
         contentPing = assignee ? getDiscId(assignee.name, true) : '';
 
         embed
-          .setTitle(`${emoji} Issue ${issue.key} Updated`)
+          .setTitle(`${emoji} ${eventMeta.category.toUpperCase()} ${issue.key} ${eventMeta.action.toUpperCase()}`)
           .setURL(`${process.env.JURL}browse/${issue.key}`)
-          .setDescription(`**Status updated to:** ${status}`)
+          .setDescription(`**Status: ** ${status}`)
           .setColor(color)
           .addFields(
-            { name: 'Assignee', value: assignee?.displayName || 'Unassigned', inline: true },
+            { name: 'Assignee', value: getDiscId(assignee?.displayName,true) || 'Unassigned', inline: true },
           );
       }
 
